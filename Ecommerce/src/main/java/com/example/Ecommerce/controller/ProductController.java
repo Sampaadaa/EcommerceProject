@@ -6,6 +6,7 @@ import com.example.Ecommerce.dto.ProductResponse;
 import com.example.Ecommerce.models.Category;
 import com.example.Ecommerce.models.Product;
 import com.example.Ecommerce.services.ProductService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "E-Commerce Application Project")
 
 public class ProductController {
 
@@ -42,6 +44,12 @@ public class ProductController {
         ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, sortOrder);
 
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/products/{productId}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+        ProductDto productDto = productService.getProductById(productId);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
     }
 
     @GetMapping("/public/categories/{categoryId}/products")

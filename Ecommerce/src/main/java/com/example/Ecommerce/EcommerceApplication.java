@@ -3,6 +3,9 @@ package com.example.Ecommerce;
 import com.example.Ecommerce.Repository.RoleRepository;
 import com.example.Ecommerce.config.AppConstant;
 import com.example.Ecommerce.models.Role;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,6 +18,7 @@ import java.util.List;
 
 @SpringBootApplication
 
+@SecurityScheme(name = "E-Commerce Application", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class EcommerceApplication implements CommandLineRunner {
 
 

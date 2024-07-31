@@ -6,6 +6,7 @@ import com.example.Ecommerce.dto.LoginCredentials;
 import com.example.Ecommerce.dto.UserDto;
 import com.example.Ecommerce.exceptions.UserNotFoundException;
 import com.example.Ecommerce.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.Map;
-
+@SecurityRequirement(name = "E-Commerce Application Project")
 @RestController
 @RequestMapping("/api")
 
@@ -39,6 +40,9 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //Registers the user in the system.
+    //Generates and returns a JWT token in the response.
+
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerHandler(@Valid @RequestBody UserDto user) throws UserNotFoundException {
         String encodedPass = passwordEncoder.encode(user.getPassword());
@@ -52,6 +56,9 @@ public class AuthController {
         return new ResponseEntity<Map<String, Object>>(Collections.singletonMap("jwt-token", token),
                 HttpStatus.CREATED);
     }
+
+    //Authenticates the user's credentials.
+    //Generates and returns a JWT token in the response.
 
     @PostMapping("/login")
     public Map<String, Object> loginHandler(@Valid @RequestBody LoginCredentials credentials) {

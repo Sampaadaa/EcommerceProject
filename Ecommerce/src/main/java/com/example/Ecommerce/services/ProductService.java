@@ -16,6 +16,7 @@ public interface ProductService {
     ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     ProductDto updateProduct(Long productId, Product product);
+    ProductDto getProductById(Long productId);
 
     ProductDto updateProductImage(Long productId, MultipartFile image) throws IOException;
 

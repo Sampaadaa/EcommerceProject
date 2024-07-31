@@ -13,4 +13,6 @@ public interface AddressRepository extends JpaRepository<Address ,Long> {
     Address findByCountryAndCityAndState(String country, String city, String state);
 
     Address findByCountryAndStateAndCity(String country, String state, String city);
+
+
 }

@@ -20,6 +20,8 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import com.example.Ecommerce.Security.JWTFilter;
+import com.example.Ecommerce.services.UserDetailsServiceImpl;
 
 
 //Indicates that this class contains Spring configuration
@@ -59,6 +61,7 @@ public class SecurityConfig {
                 .requestMatchers(AppConstant.USER_URLS).hasAnyAuthority("USER", "ADMIN")
 
                 .requestMatchers(AppConstant.ADMIN_URLS).hasAuthority("ADMIN")
+
                 //AppConstant.USER_URLS
                 .anyRequest()
                 .authenticated()
@@ -110,3 +113,4 @@ public class SecurityConfig {
 
 
 }
+

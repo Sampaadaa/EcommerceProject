@@ -56,6 +56,15 @@ public class User {
     @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
     private List<Address> addresses = new ArrayList<>();
 
+    //one user can have only one cart
+    //cart is the owning side
+    //when user entity is saved and updated the cart item will be saved and merged
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            //if the Cart entity is no longer referenced by the User entity, it should be removed  from the database
+            orphanRemoval = true)
+    private Cart cart;
+
+
 
 
 

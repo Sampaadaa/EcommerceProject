@@ -9,10 +9,12 @@ public class AppConstant {
     public static final String SORT_DIR = "asc";
     public static final Long ADMIN_ID = 101L;
     public static final Long USER_ID = 102L;
+    public static final String[] PUBLIC_URLS = { "/api/v1/auth/**", "/v3/api-docs", "/v2/api-docs", "/api", "/api/**",
+            "/api/public", "/api/public/**", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**",
+            "/swagger-ui.html" };
 
-
-    public static final String[] PUBLIC_URLS = {  "/api/register/**", "/api/login" };
     public static final String[] USER_URLS = { "/api/public/**" };
     public static final String[] ADMIN_URLS = { "/api/admin/**" };
+
 
 }

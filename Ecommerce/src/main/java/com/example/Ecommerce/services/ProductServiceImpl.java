@@ -211,6 +211,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductDto getProductById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        return modelMapper.map(product, ProductDto.class);
+    }
+
+    @Override
     public ProductDto updateProductImage(Long productId, MultipartFile image) throws IOException {
         // Retrieve the product from the database
         Product productFromDB = productRepository.findById(productId)
