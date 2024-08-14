@@ -51,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     public UserService userService;
 
-//    @Autowired
-//    public CartService cartService;
+    @Autowired
+    public CartService cartService;
 
     @Autowired
     public ModelMapper modelMapper;
@@ -86,11 +86,11 @@ public class OrderServiceImpl implements OrderService {
                 orderItems.add(orderItem);
             }
 
-//             Clear cart after order is placed
-//            cart.getCartItems().forEach(item -> {
-//                cartService.deleteProductFromCart(cartId, item.getProduct().getProductId());
-//                item.getProduct().setQuantity(item.getProduct().getQuantity() - item.getQuantity());
-//            });
+            //Clear cart after order is placed
+            cart.getCartItems().forEach(item -> {
+                cartService.deleteProductFromCart(cartId, item.getProduct().getProductId());
+                item.getProduct().setQuantity(item.getProduct().getQuantity() - item.getQuantity());
+            });
 
         } else if (productId != null && quantity > 0) {
             // Process direct "Buy Now" order
@@ -124,10 +124,10 @@ public class OrderServiceImpl implements OrderService {
         Order savedOrder = orderRepository.save(order);
         orderItems = orderItemRepository.saveAll(orderItems);
 
-        OrderDto   orderDTO = modelMapper.map(savedOrder, OrderDto.class);
-        orderItems.forEach(item -> orderDTO.getOrderItems().add(modelMapper.map(item, OrderItemDto.class)));
+        OrderDto   orderDto = modelMapper.map(savedOrder, OrderDto.class);
+        orderItems.forEach(item -> orderDto.getOrderItems().add(modelMapper.map(item, OrderItemDto.class)));
 
-        return orderDTO;
+        return orderDto;
     }
 
     private OrderItem createOrderItem(Product product, int quantity, double productPrice, Order order) {
