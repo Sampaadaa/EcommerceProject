@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.example.Ecommerce.models.User;
 
 @Transactional
 @Service
@@ -72,12 +73,66 @@ public class AddressServiceImpl implements AddressService{
 
     @Override
     public AddressDto updateAddress(Long addressId, Address address) {
+        // Attempt to find an address in the database that matches the given address details (country, state, city, pincode, street, buildingName).
+        Address addressFromDB = addressRepository.findByCountryAndCityAndState(
+                address.getCountry(), address.getState(), address.getCity());
 
-        return null;
+        // If the address does not exist in the database (i.e., addressFromDB is null):
+        if (addressFromDB == null) {
+            // Retrieve the address by its ID. If not found, throw a ResourceNotFoundException.
+            addressFromDB = addressRepository.findById(addressId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+            // Update the existing address with the new address details.
+            addressFromDB.setCountry(address.getCountry());
+            addressFromDB.setState(address.getState());
+            addressFromDB.setCity(address.getCity());
+
+            // Save the updated address back to the database.
+            Address updatedAddress = addressRepository.save(addressFromDB);
+
+            // Return the updated address as an AddressDTO object using modelMapper.
+            return modelMapper.map(updatedAddress, AddressDto.class);
+
+        } else {
+            // If the address exists in the database (i.e., addressFromDB is not null):
+            // Find all users associated with the given address ID.
+            List<User> users = userRepository.findByAddress(addressId);
+            final Address a = addressFromDB;
+
+            // Update each user's address list by adding the existing address (addressFromDB).
+            users.forEach(user -> user.getAddresses().add(a));
+
+            // Delete the old address from the database by calling the deleteAddress method.
+            deleteAddress(addressId);
+
+            // Return the found address as an AddressDTO object using modelMapper.
+            return modelMapper.map(addressFromDB, AddressDto.class);
+        }
     }
 
     @Override
-    public AddressDto deleteAddress(Long addressId) {
-        return null;
+    public String deleteAddress(Long addressId) {
+        // Retrieve the address by its ID. If not found, throw a ResourceNotFoundException.
+        Address addressFromDB = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        // Find all users associated with the given address ID.
+        List<User> users = userRepository.findByAddress(addressId);
+
+        // For each user, remove the address from the user's address list.
+        users.forEach(user -> {
+            user.getAddresses().remove(addressFromDB);
+
+            // Save the updated user back to the database.
+            userRepository.save(user);
+        });
+
+        // Delete the address from the database using its ID.
+        addressRepository.deleteById(addressId);
+
+        // Return a confirmation message that the address was successfully deleted.
+        return "Address deleted successfully with addressId: " + addressId;
     }
+
 }

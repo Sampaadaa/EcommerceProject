@@ -10,6 +10,6 @@ public interface AddressService {
     List<AddressDto> getAddresses();
     AddressDto getAddress(Long addressId);
     AddressDto updateAddress(Long addressId , Address address);
-    AddressDto deleteAddress(Long addressId );
+    String deleteAddress(Long addressId );
 
 }
