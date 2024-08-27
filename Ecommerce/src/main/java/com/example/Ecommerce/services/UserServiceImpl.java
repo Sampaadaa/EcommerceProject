@@ -7,10 +7,7 @@ import com.example.Ecommerce.config.AppConstant;
 import com.example.Ecommerce.dto.*;
 import com.example.Ecommerce.exceptions.APIException;
 import com.example.Ecommerce.exceptions.ResourceNotFoundException;
-import com.example.Ecommerce.models.Address;
-import com.example.Ecommerce.models.CartItem;
-import com.example.Ecommerce.models.Role;
-import com.example.Ecommerce.models.User;
+import com.example.Ecommerce.models.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,8 +40,8 @@ public class UserServiceImpl implements UserService{
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    private CartService cartService;
+    @Autowired
+    private CartService cartService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,8 +54,8 @@ public class UserServiceImpl implements UserService{
             //maps the UserDto object to a User entity
             User user = modelMapper.map(userDto, User.class);
 
-//            Cart cart = new Cart();
-//            user.setCart(cart);
+            Cart cart = new Cart();
+            user.setCart(cart);
 
             //Role object is fetched from the roleRepo using the USER_ID constant
             Role role = roleRepository.findById(AppConstant.USER_ID).get();
@@ -86,7 +83,7 @@ public class UserServiceImpl implements UserService{
             //saving user entity to userRepository
             User registeredUser = userRepository.save(user);
 
-//            cart.setUser(registeredUser);
+            cart.setUser(registeredUser);
 
            // registered user entity is mapped back to a UserDto
             userDto = modelMapper.map(registeredUser, UserDto.class);
@@ -245,7 +242,7 @@ public class UserServiceImpl implements UserService{
 
             Long productId = item.getProduct().getProductId();
 
-            //cartService.deleteProductFromCart(cartId, productId);
+            cartService.deleteProductFromCart(cartId, productId);
         });
 
         userRepository.delete(user);

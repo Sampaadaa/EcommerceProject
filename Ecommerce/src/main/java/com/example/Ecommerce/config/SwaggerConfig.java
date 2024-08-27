@@ -2,24 +2,37 @@ package com.example.Ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
-public class SwaggerConfig {
+@EnableWebMvc
+public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
-        return new OpenAPI().info(new Info().title("E-Commerce Application Project")
-                        .description("Backend APIs for E-Commerce app")
-                        .version("v1.0.0")
-                        .contact(new Contact().name("sampada kharel").email("sampadha.kharel@gmail.com"))
-                        .license(new License().name("License").url("/")))
-                .externalDocs(new ExternalDocumentation().description("E-Commerce App Documentation")
-                        .url("http://localhost:8080/swagger-ui/index.html"));
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2).select()
+                .apis(RequestHandlerSelectors.basePackage("com.example.Ecommerce"))
+                .paths(PathSelectors.regex("/.*"))
+                .build().apiInfo(apiInfoMetaData());
     }
+
+    private ApiInfo apiInfoMetaData() {
+
+        return new ApiInfoBuilder().title("Ecommerce Project")
+                .description("API Endpoint Decoration")
+                .contact(new Contact("Dev-Team", "https://www.dev-team.com/", "dev-team@gmail.com"))
+                .license("Apache 2.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
+                .version("1.0.0")
+                .build();
+    }
+
 }

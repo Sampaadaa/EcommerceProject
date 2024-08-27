@@ -24,58 +24,34 @@ import com.example.Ecommerce.Security.JWTFilter;
 import com.example.Ecommerce.services.UserDetailsServiceImpl;
 
 
-//Indicates that this class contains Spring configuration
 @Configuration
-//Enable web security in the application
 @EnableWebSecurity
-//allows the use of method level security annotations
 @EnableMethodSecurity
-
-//this class configure security in application
 public class SecurityConfig {
 
-    //custom implementation od userDetailsService for loading user specific data
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
-
-    //custom filter for handling jwt validation
     @Autowired
     private JWTFilter jwtFilter;
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
+
     @Bean
-    //method that describe security policies
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrf()
                 .disable()
-//                .and()
-
-                //url Authorization
                 .authorizeHttpRequests()
-
-                //specifies url matching AppConstant.PUBLIC_URLS can be accessed by anyone without authentication
                 .requestMatchers(AppConstant.PUBLIC_URLS).permitAll()
-
-                //specifies url matching AppConstant.USER_URLS can be accessed by user which have USER or ADMIN Authorities
                 .requestMatchers(AppConstant.USER_URLS).hasAnyAuthority("USER", "ADMIN")
-
                 .requestMatchers(AppConstant.ADMIN_URLS).hasAuthority("ADMIN")
-
-                //AppConstant.USER_URLS
                 .anyRequest()
                 .authenticated()
-
-                // Sends a 401 Unauthorized response when an authentication attempt fails
                 .and()
                 .exceptionHandling().authenticationEntryPoint(
                         (request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-
-                //Configures session management to be stateless
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // filter will process JWT tokens in the request headers to authenticate users
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authenticationProvider(daoAuthenticationProvider());
@@ -85,9 +61,7 @@ public class SecurityConfig {
         return defaultSecurityFilterChain;
     }
 
-
     @Bean
-    //retrieves user details and validates passwords during authentication
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
@@ -106,11 +80,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
-
-
-
-
-
 }
-
